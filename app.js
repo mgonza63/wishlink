@@ -1,25 +1,38 @@
-const express = require('express');
 
+import express, { json } from 'express';
 const app = express();
-app.use(express.json());
+import { nanoid } from 'nanoid';
+app.use(json());
 
-let list = {};
+let list = [];
 
+app.set('view engine', 'ejs');
 app.use(express.static('static'));
-app.use(express.json());
+app.use(json());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 app.post('/list/create', (req, res) => {
-  const { title } = req.body;
-  const { products } = req.body;
+  const { title, products } = req.body;
+  let id = nanoid(4);
+  const wishlinkURL = `http://localhost:3000/list/${id}`
+  const createdList = { id, title, products, wishlinkURL }
+  console.log(id)
+  list[id] = { createdList }
+  console.log(list)
 
-  const productDetails = products.map((product, index) => {
-    return `product ${index + 1 }- name: ${product.name}, url: ${product.url} `
-  })
-  console.log(`title: ${title}, products: ${productDetails}`)
+  res.json({ createdList, link: `/list/${id}` });
 })
+app.get('/list/:id', (req, res) => {
+  const wishlink = list[req.params.id];
+  if (wishlink) {
+    res.render('pages/wishlink');
+
+  } else {
+    res.status(404).json({ error: 'Wishlink not found' });
+  }
+});
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
