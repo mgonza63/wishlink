@@ -5,13 +5,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css">
-    <title>Form links</title>
+    <title>Wishlink</title>
 </head>
 
 <body>
     <div class="container">
         <form class="list-form">
             <h1 contenteditable="true">My Wishlist</h1>
+            <div class="password-container">
+                <label for="password">If you want to edit your list after submission please enter a password:</label>
+                <input type="text" placeholder="Password" name="password" style="display: block;">
+            </div>
             <fieldset class="product-fieldset">
                 <input type="text" name="product_name" placeholder="Product Name" />
                 <input type="url" name="product_url" placeholder="Product URL" />
@@ -39,8 +43,10 @@
             e.preventDefault();
             const listTitle = document.querySelector('h1').textContent
             const productsEl = document.querySelectorAll('.product-fieldset')
+            const passwordEl = document.querySelector('input[name="password"]')
             const listObject = {
                 title: listTitle,
+                password: passwordEl.value,
                 products: []
             }
             for (product of productsEl) {
@@ -63,8 +69,8 @@
                 })
                 if (response.ok) {
                     const data = await response.json();
-                    responseMessage.textContent = 'WishLink Created Successfully!'
-
+                    responseMessage.textContent = "Success! Here's your Wish Link:"
+                    responseMessage.insertAdjacentHTML('beforeend', `<a target="_blank" href="${data.createdList.wishlinkURL}">${data.createdList.wishlinkURL}</a>`)
                 } else {
                     const errorData = await response.json();
                     responseMessage.innerText = `Error: ${errorData.error}`;
