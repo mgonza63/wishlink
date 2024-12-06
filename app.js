@@ -51,7 +51,7 @@ app.post('/list/:id/verify', async (req, res) => {
     const isPasswordValid = await argon2.verify(wishlink.createdList.passwordHash, password)
 
     if (isPasswordValid) {
-      res.json({ success: true })
+      res.json(wishlink)
     } else {
       res.status(403).json({ error: 'Incorrect password.' });
     }

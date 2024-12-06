@@ -52,6 +52,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     responseMessage.textContent = "Success!"
+                    console.log(data.createdList)
                 } else {
                     const errorData = await response.json();
                     responseMessage.innerText = `Error: ${errorData.error}`;
